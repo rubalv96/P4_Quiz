@@ -1,11 +1,16 @@
-const readline = require('readline');
+const readline  = require('readline');
 
-console.log("CORE Quiz");
+const {log, biglog, errorlog, colorize} = require("./out");
+const cmds = require("./cmds");
+
+
+//Mensaje inicial
+biglog('CORE Quiz', 'green');
 
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
-  prompt: 'quiz> ',
+  prompt: colorize("quiz >", 'blue'),
   completer: (line) => {
   const completions = 'h help add delete edit list test p play credits q quit'.split(' ');
   const hits = completions.filter((c) => c.startsWith(line));
@@ -29,127 +34,55 @@ rl.on('line', (line) => {
     case 'h':
     case 'help':
       
-      helpCommand();
+      cmds.helpCommand(rl);
       break;
       
       case 'quit':
       case 'q':
-        quitCommand();
+        cmds.quitCommand(rl);
         break;
         
       case 'add':
-        addCommand();
+        cmds.addCommand(rl);
         break;
         
       case 'list':
-        listCommand();
+        cmds.listCommand(rl);
         break;
         
       case 'test':
-        testCommand(args[1]);
+        cmds.testCommand(rl,args[1]);
         break;
         
       case 'play':
       case 'p':
-        playCommand();
+        cmds.playCommand(rl);
         break;
       case 'delete' :
-        deleteCommand(args[1]);
+        cmds.deleteCommand(args[1]);
         break;
       case 'edit' :
-        editCommand(args[1]);
+        cmds.editCommand(rl,args[1]);
         break;
       case 'credits' :
-        creditsCommand();
+        cmds.creditsCommand(rl);
         break;
       case 'show' :
-        showCommand(args[1]);
+        cmds.showCommand(rl,args[1]);
         break;
         
     default:
-      defaultCommand();
-      break;
+        log(`Comando desconocido: '${colorize(cmd, 'red')}'`);
+        log(`Use ${colorize('help', 'green')} para ver todos los comandos disponibles"`);
+        rl.prompt();
+        break;
   }
   
 }).on('close', () => {
-  console.log('Adios!');
+  log('Adios!');
   process.exit(0);
 });
 
 
-const helpCommand = () => {
-      console.log("Comandos: ");
-      console.log("   h|help     - Muestra esta ayuda.");
-      console.log("   list       - Listar los quizzes existentes.");
-      console.log("   show <id>  - Muestra la preguntar y la respuesta del quiz indicado");
-      console.log("   add        - Añadir un nuevo quiz interactivo.");
-      console.log("   delete <id>- Eliminar el quiz indicado.");
-      console.log("   edit <id>  - Editar el quiz indicado. ");
-      console.log("   test <id>  - Probar el quiz indicado.");
-      console.log("   p|play     - Jugar a preguntar aleatoriamente todos los quizzes.");
-      console.log("   credits    - Créditos.");
-      console.log("   q|quit     - Salir del programa.")
-      
-      rl.prompt();
-};
-
-
-const quitCommand = () => {
-      rl.close();
-      rl.prompt();
-
-};
-
-const addCommand = () => {
-      console.log("Añadir un nuevo quiz.");
-      rl.prompt();
-};
-
-const listCommand = () => {
-      console.log("Listar todos los quizzes existentes.");
-      rl.prompt();
-
-};
-
-const testCommand = id => {
-      console.log(" Probar el quiz indicado");
-      rl.prompt();
-
-}
-
-const playCommand = () => {
-      console.log("Jugar.");
-      rl.prompt();
-}
-
-const deleteCommand = id => {
-      console.log("Borrar el quiz indicado.");
-      rl.prompt();
-
-}
-
-const editCommand = id => {
-      console.log("Editar el quiz indicado.");
-      rl.prompt();
-
-}
-
-const creditsCommand = () => {
-      console.log("Autor de la práctica: ");
-      console.log("Rubén Álvarez");
-      rl.prompt();
-}
-
-
-const defaultCommand = () => {
-      console.log(`Comando desconocido: '${cmd}'`);
-      console.log("Use 'help' para ver todos los comandos disponibles");
-      rl.prompt();
-}
-
-const showCommand = id => {
-      console.log("Mostrar el quiz indicado");
-      rl.prompt();
-}
 
 
