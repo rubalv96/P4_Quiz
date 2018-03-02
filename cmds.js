@@ -34,7 +34,9 @@ exports.addCommand = rl => {
 };
 
 exports.listCommand = rl => {
-    log("Listar todos los quizzes existentes.");
+    model.getAll().forEach((quiz, id) => {
+        log(`  [${colorize(id, 'magenta')}]: ${quiz.question}`);
+    });
     rl.prompt();
 
 };

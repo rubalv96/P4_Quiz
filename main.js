@@ -86,3 +86,4 @@ rl.on('line', (line) => {
 
 
 
+//Minuto del video 47 ya he implementado lista
