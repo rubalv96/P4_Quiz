@@ -1,8 +1,8 @@
 const readline  = require('readline');
 
+
 const {log, biglog, errorlog, colorize} = require("./out");
 const cmds = require("./cmds");
-
 
 //Mensaje inicial
 biglog('CORE Quiz', 'green');
@@ -59,7 +59,7 @@ rl.on('line', (line) => {
         cmds.playCommand(rl);
         break;
       case 'delete' :
-        cmds.deleteCommand(args[1]);
+        cmds.deleteCommand(rl, args[1]);
         break;
       case 'edit' :
         cmds.editCommand(rl,args[1]);
