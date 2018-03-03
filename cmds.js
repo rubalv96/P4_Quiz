@@ -9,7 +9,7 @@ exports.helpCommand = rl => {
     log("Comandos: ");
     log("   h|help     - Muestra esta ayuda.");
     log("   list       - Listar los quizzes existentes.");
-    log("   show <id>  - Muestra la preguntar y la respuesta del quiz indicado");
+    log("   show <id>  - Muestra la pregunta y la respuesta del quiz indicado");
     log("   add        - Añadir un nuevo quiz interactivo.");
     log("   delete <id>- Eliminar el quiz indicado.");
     log("   edit <id>  - Editar el quiz indicado. ");
@@ -94,14 +94,17 @@ exports.playCommand = (rl) => {
         rl.prompt();
     }
     else {
-        let id = Math.floor(Math.random() * toBeResolved.length); // Math.random() * size to be resolverd
-
-        toBeResolved.splice(id, 1);
-        let quiz = model.getByIndex(id);
+        let pos = Math.floor(Math.random() * toBeResolved.length); // Math.random() * size to be resolverd
 
 
 
-            rl.question(quiz.question, answer => {
+
+
+        let quiz = model.getByIndex(toBeResolved[pos]);
+
+        toBeResolved.splice(pos, 1);
+
+            rl.question(colorize(quiz.question + " ", 'red'), answer => {
                 if ((answer || "").trim().toLowerCase() === (quiz.answer || "").trim().toLowerCase()) {
 
                     biglog("Correcto", 'magenta');
