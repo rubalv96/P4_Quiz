@@ -59,11 +59,11 @@ exports.testCommand = (rl,id) => {
 
             rl.question(`${colorize(quiz.question, 'red')}` + " ", answer => {
                 if ((answer || "").trim().toLowerCase() === (quiz.answer || "").trim().toLowerCase()) {
-                    biglog("Correcto", 'green');
+                    log("Correcto", 'green');
                     rl.prompt();
                 }
                 else {
-                    biglog("Incorrecto", 'red');
+                    log("Incorrecto", 'red');
                     rl.prompt();
                 }
             });
@@ -90,7 +90,7 @@ exports.playCommand = (rl) => {
     if (toBeResolved.length === 0) {
         log("¡No hay más preguntas por contestar!", 'yellow');
         log("Tu puntuación en aciertos es de: ", 'blue');
-        biglog(score, 'blue');
+        log(score, 'blue');
         rl.prompt();
     }
     else {
@@ -107,7 +107,7 @@ exports.playCommand = (rl) => {
             rl.question(colorize(quiz.question + " ", 'red'), answer => {
                 if ((answer || "").trim().toLowerCase() === (quiz.answer || "").trim().toLowerCase()) {
 
-                    biglog("Correcto", 'magenta');
+                    log("Correcto", 'magenta');
                     score++;
                     log("¡Llevas " + score + " aciertos!", 'blue');
                     playOne();
@@ -116,7 +116,7 @@ exports.playCommand = (rl) => {
                 }
 
                 else {
-                    biglog("Incorrecto", 'red');
+                    log("Incorrecto", 'red');
                     log("¡Fin del juego, has conseguido " + score + " aciertos!", 'blue');
                     rl.prompt();
 
