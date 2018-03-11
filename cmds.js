@@ -1,8 +1,9 @@
 const {log, biglog, errorlog, colorize} = require("./out");
 const {models} = require ('./model');
 
+const Sequelize = require('sequelize');
 
-
+//min 27:39
 
 
 exports.helpCommand = rl => {
@@ -28,14 +29,38 @@ exports.quitCommand = rl => {
 
 };
 
+const makeQuestion= (rl, text) => {
+    return new Sequelize.Promise((resolve, reject) =>{
+        rl.question(colorize(text, 'red'), answer =>{
+            resolve(answer.trim());
+        });
+    });
+}
+
 exports.addCommand = rl => {
-    rl.question(colorize(' Introduzca una pregunta: ', 'red'), question => {
-        rl.question(colorize(' Introduzca la respuesta ', 'red'), answer => {
-            model.add(question, answer);
-            log(` ${colorize( 'Se ha añadido', 'magenta')}: ${question} ${colorize('=>','magenta')} ${answer}`);
-            rl.prompt();
+    makeQuestion(rl, 'Introduzca una pregunta: ')
+        .then(q =>{
+            return makeQuestion(rl, 'Introduzca la respuesta: ')
+                .then(a => {
+                    return {question: q, answer:a};
+                });
         })
-    })
+        .then (quiz =>{
+            return models.quiz.create(quiz);
+        })
+        .then ((quiz) => {
+            log (`${colorize('Se ha añadido', 'magenta')}: ${quiz.question} ${colorize("=>", 'magenta')} ${colorize(quiz.answer)}`);
+        })
+        .catch(Sequelize.ValidationError, error =>{
+            errorlog("El quiz es erróneo");
+            error.errors.forEach(({message})=>errorlog(message));
+        })
+        .catch(error =>{
+            errorlog(error.message);
+        })
+        .then(()=>{
+            rl.prompt();
+        });
 };
 
 exports.listCommand = rl => {
