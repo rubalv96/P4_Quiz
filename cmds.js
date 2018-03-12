@@ -165,48 +165,52 @@ exports.playCommand = (rl) => {
 
 exports.deleteCommand = (rl,id) => {
 
-    if(typeof id === "undefined"){
-        errorlog(`Falta el parámetro id. `);
-    } else{
-        try{
-            model.deleteByIndex(id)
-
-        }
-        catch(error){
+    validateId(id)
+        .then(id => models.quiz.destroy({where: {id}}))
+        .catch(error =>{
             errorlog(error.message);
-        }
-    }
-    rl.prompt();
+        })
+        .then(() => {
+            rl.prompt();
+        })
 };
 
 exports.editCommand = (rl,id) => {
-   if(typeof id === "undefined"){
-       errorlog(`Falta el parámetro id`);
-       rl.prompt();
-   }
-   else{
-       try{
+   validateId(id)
+       .then(id => models.quiz.findById(id))
+       .then(quiz => {
+           if(!quiz){
+               throw new Error(`No existe un quiz asociado al id =${id}.`);
+           }
 
-           const quiz = model.getByIndex(id);
-
-           process.stdout.isTTY && setTimeout(() =>{ rl.write(quiz.question)},0);
-           rl.question(colorize(' Introduzca una pregunta: ', 'red'), question =>{
-
-               process.stdout.isTTY && setTimeout(() => {rl.write(quiz.answer)},0);
-               rl.question(colorize( 'Introduzca la respuesta: ', 'red'), answer => {
-                   model.update(id, question, answer);
-                   log(`Se ha cambiado el quiz ${colorize(id, 'magenta')} por : ${question} ${colorize(' => ', 'magenta')} ${answer}`);
-                   rl.prompt();
-               });
+           process.stdout.isTTY && setTimeout(()=> {rl.write(quiz.question)},0);
+           return makeQuestion(rl, ' Introduzca una pregunta: ')
+               .then(q =>{
+                   process.stdout.isTTY && setTimeout(() =>{rl.write(quiz.answer)},0);
+                   return makeQuestion(rl, ' Introduzca la respuesta: ')
+                       .then(a =>{
+                           quiz.question=q;
+                           quiz.answer = a;
+                           return quiz;
+                       });
            });
-
-       }
-       catch(error){
+       })
+       .then(quiz => {
+           return quiz.save();
+       })
+       .then(quiz => {
+           log(`Se ha cambiado el quiz ${colorize(quiz.id, 'magenta')} por : ${quiz.question} ${colorize('=>', 'red')} ${quiz.answer}`);
+       })
+       .catch(Sequelize.ValidationError, error =>{
+           errorlog("El quiz es erróneo");
+           error.errors.forEach(({message}) => errorlog(message));
+       })
+       .catch(error =>{
            errorlog(error.message);
+       })
+       .then(() =>{
            rl.prompt();
-       }
-   }
-
+       });
 };
 
 exports.creditsCommand = rl => {
@@ -217,7 +221,7 @@ exports.creditsCommand = rl => {
 
 
 const validateId = id =>{
-    return new Promise((resolve, reject) =>{
+    return new Sequelize.Promise((resolve, reject) =>{
         if(typeof id === "undefined"){
             reject(new Error(`Falta el parámetro <id>.`));
         } else {
