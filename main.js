@@ -4,7 +4,7 @@ const readline  = require('readline');
 const {log, biglog, errorlog, colorize} = require("./out");
 const cmds = require("./cmds");
 
-const net = require("net");
+const net = require('net');
 
 
 

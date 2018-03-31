@@ -6,17 +6,17 @@ const Sequelize = require('sequelize');
 
 
 exports.helpCommand = (socket, rl) => {
-    log("Comandos: ");
-    log(socket,"   h|help     - Muestra esta ayuda.");
-    log(socket,"   list       - Listar los quizzes existentes.");
-    log(socket,"   show <id>  - Muestra la pregunta y la respuesta del quiz indicado");
-    log(socket,"   add        - Añadir un nuevo quiz interactivo.");
-    log(socket,"   delete <id>- Eliminar el quiz indicado.");
-    log(socket,"   edit <id>  - Editar el quiz indicado. ");
-    log(socket,"   test <id>  - Probar el quiz indicado.");
-    log(socket,"   p|play     - Jugar a preguntar aleatoriamente todos los quizzes.");
-    log(socket,"   credits    - Créditos.");
-    log(socket,"   q|quit     - Salir del programa.");
+    //log("Comandos: ", 'green');
+    log(socket,"   h|help     - Muestra esta ayuda.", 'green');
+    log(socket,"   list       - Listar los quizzes existentes.", 'green');
+    log(socket,"   show <id>  - Muestra la pregunta y la respuesta del quiz indicado", 'green');
+    log(socket,"   add        - Añadir un nuevo quiz interactivo.", 'green');
+    log(socket,"   delete <id>- Eliminar el quiz indicado.", 'green');
+    log(socket,"   edit <id>  - Editar el quiz indicado. ", 'green');
+    log(socket,"   test <id>  - Probar el quiz indicado.", 'green');
+    log(socket,"   p|play     - Jugar a preguntar aleatoriamente todos los quizzes.", 'green');
+    log(socket,"   credits    - Créditos.", 'green');
+    log(socket,"   q|quit     - Salir del programa.", 'green');
 
     rl.prompt();
 };
@@ -88,10 +88,10 @@ exports.testCommand = (socket,rl,id) => {
             makeQuestion(rl, ` ${quiz.question} : ` )
                 .then(a => {
                     if (a == quiz.answer.trim().toLowerCase()) {
-                        log(socket,'Correcto');
+                        log(socket,'Correcto', 'blue');
                     }
                     else {
-                        log(socket,'Incorrecto');
+                        log(socket,'Incorrecto', 'red');
                     }
                     rl.prompt();
                     return quiz;
@@ -218,7 +218,7 @@ exports.creditsCommand = (socket,rl) => {
 };
 
 
-const validateId = (socket,id) =>{
+const validateId = (id) =>{
     return new Sequelize.Promise((resolve, reject) =>{
         if(typeof id === "undefined"){
             reject(new Error(`Falta el parámetro <id>.`));
